@@ -292,10 +292,10 @@ MonoBehaviour:
   Decceleration: 5
   DirectionControl: 6
   CurrentState: 0
-  TurnSpeed: 160
+  TurnSpeed: 400
   TurnSpeedInAir: 15
   TurnSpeedOnWalls: 20
-  LookUpSpeed: 60
+  LookUpSpeed: 100
   Head: {fileID: 1239034053}
   MaxLookAngle: 80
   MinLookAngle: -80
@@ -363,7 +363,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c39bd0402532aa5438b88929f310957e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -459,7 +459,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bcedb3dc0b04ef440a4a39d3d8883a66, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -888,7 +888,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bcedb3dc0b04ef440a4a39d3d8883a66, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

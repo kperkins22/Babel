@@ -84,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
         StandingHeight = Cap.height;
 
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         AdjustmentAmt = 1;
     }
