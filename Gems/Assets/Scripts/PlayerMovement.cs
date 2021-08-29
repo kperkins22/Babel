@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Physics")]
     public float MaxSpeed; //how fast we run forward
     public float BackwardsSpeed; //how fast we run backwards
-    [Range(0,1)]
+    //0[Range(0,1)]
     public float InAirControl; //how much control you have over your movement direction when in air
 
     private float ActSpeed; //how much speed is applied to the rigidbody
@@ -40,6 +40,16 @@ public class PlayerMovement : MonoBehaviour
     private float XTurn; //how much we have turned Up or Down
     public float MaxLookAngle = 65; //how much we can look up
     public float MinLookAngle = -30; //how much we can look down
+
+    Vector2 currentMouseDelta = Vector2.zero;
+    Vector2 currentMouseDeltaVelocity = Vector2.zero;
+
+    [SerializeField] [Range(0, 0.5f)] float moveSmoothTime = 0.3f;
+    [SerializeField] [Range(0, 0.5f)] float mouseSmoothTime = 0.3f;
+
+    [SerializeField] Transform playerCamera = null;
+    [SerializeField] float mouseSense = 3.5f;
+    float cameraPitch = 0;
 
     [Header("WallRuns")]
     public float WallRunTime = 2f; //how long we can run on walls
@@ -94,8 +104,11 @@ public class PlayerMovement : MonoBehaviour
         float XMOV = Input.GetAxis("Horizontal");
         float YMOV = Input.GetAxis("Vertical");
 
+        UpdateMouseLook();
+
         if (CurrentState == PlayerStates.grounded)
         {
+
             if (Input.GetButtonDown("Jump"))
             {
                 //jump upwards
@@ -124,9 +137,10 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (CurrentState == PlayerStates.inair)
         {
+            
             if (Input.GetButton("Grab"))
             {
-                Debug.Log("POOP");
+                
                 Vector3 Ledge = Coli.CheckLedges();
                 if (Ledge != Vector3.zero)
                 {
@@ -176,10 +190,10 @@ public class PlayerMovement : MonoBehaviour
         float XMOV = Input.GetAxis("Horizontal");
         float YMOV = Input.GetAxis("Vertical");
 
-        float CamX = Input.GetAxis("MouseX");
-        float CamY = Input.GetAxis("MouseY");
+        //float CamX = Input.GetAxis("MouseX");
+        //float CamY = Input.GetAxis("MouseY");
 
-        LookUpDown(CamY, Del);
+        //LookUpDown(CamY, Del);
 
 
         if (CurrentState == PlayerStates.grounded)
@@ -195,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
             LerpSpeed(InputMagnitude, Del, TargetSpd);
 
             MovePlayer(XMOV, YMOV, Del, 1);
-            TurnPlayer(CamX, Del, TurnSpeed);
+           // TurnPlayer(CamX, Del, TurnSpeed);
 
             if (AdjustmentAmt < 1)
                 AdjustmentAmt += Del * PlayerControl;
@@ -206,13 +220,14 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (CurrentState == PlayerStates.inair)
         {
+            Debug.Log("InAir");
             if (InAirTimer < 10)
                 InAirTimer += Del;
 
-            MovePlayer(XMOV, YMOV, Del, InAirControl );
+           MovePlayer(XMOV, YMOV, Del, InAirControl );
 
             //turn our player with the in air modifier
-            TurnPlayer(CamX, Del, TurnSpeedInAir);
+           // TurnPlayer(CamX, Del, TurnSpeedInAir);
         }
         else if(CurrentState == PlayerStates.ledgegrab)
         {
@@ -245,12 +260,27 @@ public class PlayerMovement : MonoBehaviour
         {
             ActWallTime += Del;
 
-            TurnPlayer(CamX, Del, TurnSpeedOnWalls);
+           // TurnPlayer(CamX, Del, TurnSpeedOnWalls);
 
             WallRunMovement(YMOV, Del);
         }
     }
 
+
+
+    void UpdateMouseLook()
+    {
+        Vector2 targetMouseDelta = new Vector2(Input.GetAxis("MouseX"), Input.GetAxis("MouseY"));
+
+        currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, mouseSmoothTime);
+
+        cameraPitch -= currentMouseDelta.y * mouseSense;
+        cameraPitch = Mathf.Clamp(cameraPitch, -90f, 90f);
+
+        playerCamera.localEulerAngles = Vector3.right * cameraPitch;
+
+        transform.Rotate(Vector3.up * currentMouseDelta.x * mouseSense);
+    }
     void JumpUp()
     {
         //only jump if we are still on the ground
@@ -317,11 +347,10 @@ public class PlayerMovement : MonoBehaviour
 
     void InAir()
     {
-        if (Crouch)
-            StopCrouching();
-
         InAirTimer = 0;
         CurrentState = PlayerStates.inair;
+        if (Crouch)
+            StopCrouching();
     }
     void OnGround()
     {
@@ -384,10 +413,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Crouch = false;
         Cap.height = StandingHeight;
+        Debug.Log("Stopped crouching");
     }
     void SlideForwards()
     {
-        ActSpeed = SlideSpeedLimit;
+        //ActSpeed = SlideSpeedLimit;
 
         AdjustmentAmt = 0;
 
@@ -395,6 +425,10 @@ public class PlayerMovement : MonoBehaviour
 
         Dir.y = 0;
 
-        Rigid.AddForce(Dir * SlideAmt, ForceMode.Impulse);
+     
+
+        Rigid.AddForce(Dir * SlideAmt, ForceMode.VelocityChange);
+
+      
     }
 }
