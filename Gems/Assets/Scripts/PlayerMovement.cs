@@ -85,6 +85,9 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider Cap;
     private Animator Anim;
 
+    public static PlayerMovement instance;
+
+
     void Start()
     {
         Coli = GetComponent<PlayerCollision>();
@@ -103,6 +106,14 @@ public class PlayerMovement : MonoBehaviour
     {
         float XMOV = Input.GetAxis("Horizontal");
         float YMOV = Input.GetAxis("Vertical");
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            GameManager.instance.playerCurrentHealth = GameManager.instance.playerCurrentHealth - GetComponent<CharacterCombat>().damageValue;
+            GameManager.instance.UpdateStats();
+        }
+
+
 
         UpdateMouseLook();
 
@@ -431,4 +442,10 @@ public class PlayerMovement : MonoBehaviour
 
       
     }
+
+    public void TakeDamage(int DamageAmt)
+    {
+        //GameManager.instance.playerHealth = GameManager.instance.playerHealth - DamageAmt;
+    }
+
 }
